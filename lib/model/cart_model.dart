@@ -9,27 +9,43 @@ class CartModel extends ChangeNotifier {
     ["Chicken", "12.80", "assets/images/chicken.png", Colors.brown],
     ["Water", "1.00", "assets/images/water.png", Colors.blue],
   ];
-  List _cartItems = [];
+
+  List<Map<String, dynamic>> _cartItems = [];
 
   get shopItems => _shopItems;
   get cartItems => _cartItems;
 
   void addToCart(int index) {
-     _cartItems.add(_shopItems[index]);
-    
-
+    var item = _shopItems[index];
+    // Check if the item is already in the cart
+    int existingIndex =
+        _cartItems.indexWhere((cartItem) => cartItem['item'][0] == item[0]);
+    if (existingIndex != -1) {
+      // If item exists, increase the quantity
+      _cartItems[existingIndex]['quantity']++;
+    } else {
+      // If item doesn't exist, add it to the cart with a quantity of 1
+      _cartItems.add({
+        'item': item,
+        'quantity': 1,
+      });
+    }
     notifyListeners();
   }
 
   void removeFromCart(int index) {
-    _cartItems.removeAt(index);
+    if (_cartItems[index]['quantity'] > 1) {
+      _cartItems[index]['quantity']--;
+    } else {
+      _cartItems.removeAt(index);
+    }
     notifyListeners();
   }
 
   String calculateTotal() {
     double totalPrice = 0;
-    for (int i = 0; i < cartItems.length; i++) {
-      totalPrice += double.parse(cartItems[i][1]);
+    for (var cartItem in _cartItems) {
+      totalPrice += double.parse(cartItem['item'][1]) * cartItem['quantity'];
     }
     return totalPrice.toStringAsFixed(2);
   }

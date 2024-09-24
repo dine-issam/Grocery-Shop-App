@@ -125,6 +125,7 @@ class HomePage extends StatelessWidget {
                   return MyListTile(
                     itemImage: "assets/images/banana.png",
                     itemName: 'banana',
+                    subtitle: Text('0'),
                     trailing: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [

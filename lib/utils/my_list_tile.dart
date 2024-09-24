@@ -7,27 +7,25 @@ class MyListTile extends StatelessWidget {
     required this.itemName,
     required this.itemImage,
     required this.trailing,
-
+    required this.subtitle, 
   });
+
   final Widget? trailing;
   final String itemName;
   final String itemImage;
-
+  final Widget subtitle; 
 
   @override
   Widget build(BuildContext context) {
     return ListTile(
-        leading: Image.asset(itemImage),
-        title: Text(
-          itemName,
-          style:
-              GoogleFonts.nunitoSans(fontSize: 15, fontWeight: FontWeight.bold),
-        ),
-        subtitle: Text(
-         "0",
-          style: GoogleFonts.nunitoSans(
-              color: Colors.grey, fontSize: 12, fontWeight: FontWeight.bold),
-        ),
-        trailing: trailing);
+      leading: Image.asset(itemImage),
+      title: Text(
+        itemName,
+        style:
+            GoogleFonts.nunitoSans(fontSize: 15, fontWeight: FontWeight.bold),
+      ),
+      subtitle: subtitle, 
+      trailing: trailing,
+    );
   }
 }

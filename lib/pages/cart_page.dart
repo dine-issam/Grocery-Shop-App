@@ -5,9 +5,14 @@ import 'package:grocery_shop_app_mitchkoko/pages/home_page.dart';
 import 'package:grocery_shop_app_mitchkoko/utils/my_list_tile.dart';
 import 'package:provider/provider.dart';
 
-class CartPage extends StatelessWidget {
+class CartPage extends StatefulWidget {
   CartPage({super.key});
 
+  @override
+  State<CartPage> createState() => _CartPageState();
+}
+
+class _CartPageState extends State<CartPage> {
   final cartModel = CartModel();
 
   @override
@@ -46,21 +51,51 @@ class CartPage extends StatelessWidget {
           ),
           Selector<CartModel, List>(
             selector: (context, cartModel) => cartModel.cartItems,
-            // Select only the cartItems list
-            builder: (context, value, child) {
+            builder: (context, cartItems, child) {
               return Expanded(
                 child: ListView.builder(
-                  itemCount: value.length,
+                  itemCount: cartItems.length,
                   scrollDirection: Axis.vertical,
                   itemBuilder: (context, index) {
                     return MyListTile(
-                      itemImage: value[index][2],
-                      itemName: value[index][0],
-                      trailing: const Padding(
-                        padding: EdgeInsets.only(right: 10),
-                        child: Text(
-                          "Edit",
-                          style: TextStyle(color: Colors.blue, fontSize: 17),
+                      itemImage: cartItems[index]['item'][2],
+                      itemName: cartItems[index]['item'][0],
+                      subtitle: RichText(
+                        text: TextSpan(
+                            text:
+                                '\$${(double.parse(cartItems[index]['item'][1]) * cartItems[index]['quantity']).toStringAsFixed(2)}',
+                            style: GoogleFonts.nunitoSans(
+                                color: Colors.black,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text:
+                                    ' - ${cartItems[index]['quantity']} items',
+                                style: GoogleFonts.nunitoSans(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ]),
+                      ),
+                      trailing: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: GestureDetector(
+                          onTap: () {
+                            // Remove item from cart when "Edit" is tapped
+                            Provider.of<CartModel>(context, listen: false)
+                                .removeFromCart(index);
+                            // Rebuild the ui
+                            setState(() {});
+                          },
+                          child: Text(
+                            "Delete",
+                            style: GoogleFonts.nunitoSans(
+                                color: Colors.red,
+                                fontSize: 14,
+                                fontWeight: FontWeight.w800),
+                          ),
                         ),
                       ),
                     );
