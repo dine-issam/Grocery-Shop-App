@@ -93,22 +93,28 @@ class HomePage extends StatelessWidget {
               const SizedBox(
                 height: 10,
               ),
-              Expanded(
-                  child: ListView.builder(
-                itemCount: cartModel.shopItems.length,
-                scrollDirection: Axis.horizontal,
-                itemBuilder: (context, index) {
-                  var item = cartModel.shopItems[index];
-                  return MyCartUi(
-                    itemName: item[0],
-                    itemPrice: item[1],
-                    itemImage: item[2],
-                    itemColor: item[3],
-                    onTap: () => Provider.of<CartModel>(context, listen: false)
-                        .addToCart(index),
-                  );
+              Selector<CartModel, List>(
+                selector: (context, cartModel) => cartModel.historyCartItems,
+                builder: (context, value, child) {
+                  return Expanded(
+                      child: ListView.builder(
+                    itemCount: cartModel.shopItems.length,
+                    scrollDirection: Axis.horizontal,
+                    itemBuilder: (context, index) {
+                      var item = cartModel.shopItems[index];
+                      return MyCartUi(
+                        itemName: item[0],
+                        itemPrice: item[1],
+                        itemImage: item[2],
+                        itemColor: item[3],
+                        onTap: () =>
+                            Provider.of<CartModel>(context, listen: false)
+                                .addToCart(index),
+                      );
+                    },
+                  ));
                 },
-              )),
+              ),
               const SizedBox(
                 height: 10,
               ),

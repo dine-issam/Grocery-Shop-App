@@ -11,9 +11,11 @@ class CartModel extends ChangeNotifier {
   ];
 
   List<Map<String, dynamic>> _cartItems = [];
+  List<Map<String, dynamic>> _historyCartItems = [];
 
   get shopItems => _shopItems;
   get cartItems => _cartItems;
+  get historyCartItems => _historyCartItems;
 
   void addToCart(int index) {
     var item = _shopItems[index];
@@ -48,5 +50,15 @@ class CartModel extends ChangeNotifier {
       totalPrice += double.parse(cartItem['item'][1]) * cartItem['quantity'];
     }
     return totalPrice.toStringAsFixed(2);
+  }
+
+  // Method to move cartItems to history and clear cart
+  void completePurchase() {
+    // Move all current cart items to history
+    _historyCartItems.addAll(List.from(_cartItems));
+    // Clear the cart
+    _cartItems.clear();
+
+    notifyListeners();
   }
 }
