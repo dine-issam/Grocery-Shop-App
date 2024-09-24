@@ -10,8 +10,8 @@ class CartModel extends ChangeNotifier {
     ["Water", "1.00", "assets/images/water.png", Colors.blue],
   ];
 
-  List<Map<String, dynamic>> _cartItems = [];
-  List<Map<String, dynamic>> _historyCartItems = [];
+  final List<Map<String, dynamic>> _cartItems = [];
+  final List<Map<String, dynamic>> _historyCartItems = [];
 
   get shopItems => _shopItems;
   get cartItems => _cartItems;
@@ -54,6 +54,9 @@ class CartModel extends ChangeNotifier {
 
   // Method to move cartItems to history and clear cart
   void completePurchase() {
+    if(_historyCartItems.isNotEmpty){
+      _historyCartItems.clear();
+    }
     // Move all current cart items to history
     _historyCartItems.addAll(List.from(_cartItems));
     // Clear the cart

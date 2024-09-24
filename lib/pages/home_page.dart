@@ -8,10 +8,17 @@ import 'package:grocery_shop_app_mitchkoko/utils/my_cart_ui.dart';
 import 'package:grocery_shop_app_mitchkoko/utils/my_list_tile.dart';
 import 'package:provider/provider.dart';
 
-class HomePage extends StatelessWidget {
-  HomePage({super.key});
+class HomePage extends StatefulWidget {
+  const HomePage({super.key});
+
+  @override
+  State<HomePage> createState() => _HomePageState();
+}
+
+class _HomePageState extends State<HomePage> {
   // Create an instance of CartModel
   CartModel cartModel = CartModel();
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -22,7 +29,7 @@ class HomePage extends StatelessWidget {
             context,
             MaterialPageRoute(
               builder: (context) {
-                return CartPage();
+                return const CartPage();
               },
             ),
           ),
@@ -119,39 +126,50 @@ class HomePage extends StatelessWidget {
                 height: 10,
               ),
               Text(
-                "My Orders",
+                "My last Orders",
                 style: GoogleFonts.nunitoSans(
                     fontSize: 15, fontWeight: FontWeight.bold),
               ),
-              Expanded(
-                  child: ListView.builder(
-                itemCount: 20,
-                scrollDirection: Axis.vertical,
-                itemBuilder: (context, index) {
-                  return MyListTile(
-                    itemImage: "assets/images/banana.png",
-                    itemName: 'banana',
-                    subtitle: Text('0'),
-                    trailing: Column(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          "\$50.65",
-                          style: GoogleFonts.nunitoSans(
-                              fontSize: 15, fontWeight: FontWeight.bold),
-                        ),
-                        Text(
-                          "6 items",
-                          style: GoogleFonts.nunitoSans(
-                              color: Colors.grey,
-                              fontSize: 12,
-                              fontWeight: FontWeight.bold),
-                        ),
-                      ],
-                    ),
-                  );
-                },
-              )),
+           Selector<CartModel, List>(
+            selector: (context, cartModel) => cartModel.historyCartItems,
+            builder: (context, cartItems, child) {
+              return Expanded(
+                child: ListView.builder(
+                  itemCount: cartItems.length,
+                  scrollDirection: Axis.vertical,
+                  itemBuilder: (context, index) {
+                    return MyListTile(
+                      itemImage: cartItems[index]['item'][2],
+                      itemName: cartItems[index]['item'][0],
+                      subtitle: Text('22 dec, 2024',style: GoogleFonts.nunitoSans(
+                                color: Colors.grey,
+                                fontSize: 13,
+                                fontWeight: FontWeight.bold),),
+                      trailing: RichText(
+                        text: TextSpan(
+                            text:
+                                '\$${(double.parse(cartItems[index]['item'][1]) * cartItems[index]['quantity']).toStringAsFixed(2)}\n',
+                            style: GoogleFonts.nunitoSans(
+                                color: Colors.black,
+                                fontSize: 16,
+                                fontWeight: FontWeight.w800),
+                            children: <TextSpan>[
+                              TextSpan(
+                                text:
+                                    '${cartItems[index]['quantity']} items',
+                                style: GoogleFonts.nunitoSans(
+                                    color: Colors.grey,
+                                    fontSize: 12,
+                                    fontWeight: FontWeight.bold),
+                              )
+                            ]),
+                      ),
+                    );
+                  },
+                ),
+              );
+            },
+          ),
               const SizedBox(
                 height: 70,
               )
